@@ -26,7 +26,7 @@
         /// Required method for Designer support - do not modify
         /// the contents of this method with the code editor.
         /// </summary>
-         void InitializeComponent()
+        void InitializeComponent()
         {
             labelKey = new Label();
             dataGridViewSource = new DataGridView();
@@ -66,9 +66,9 @@
             // 
             button_ok_excolumn.Location = new Point(481, 16);
             button_ok_excolumn.Name = "button_ok_excolumn";
-            button_ok_excolumn.Size = new Size(112, 34);
+            button_ok_excolumn.Size = new Size(295, 34);
             button_ok_excolumn.TabIndex = 4;
-            button_ok_excolumn.Text = "button1";
+            button_ok_excolumn.Text = "設定ファイルに反映";
             button_ok_excolumn.UseVisualStyleBackColor = true;
             button_ok_excolumn.Click += button_ok_excolumn_Click;
             // 
@@ -76,7 +76,7 @@
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1120, 488);
+            ClientSize = new Size(837, 488);
             Controls.Add(button_ok_excolumn);
             Controls.Add(label1);
             Controls.Add(dataGridViewSource);
@@ -90,7 +90,7 @@
 
         #endregion
 
-         Label labelKey;
+        Label labelKey;
          DataGridView dataGridViewSource;
          Label label1;
          Button button_ok_excolumn;

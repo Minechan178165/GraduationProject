@@ -33,6 +33,7 @@
             CSV_textBox = new TextBox();
             label2 = new Label();
             button_settingFile = new Button();
+            Change_SettingFile_button = new Button();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             SuspendLayout();
             // 
@@ -47,7 +48,7 @@
             // 
             // button_CSV
             // 
-            button_CSV.Location = new Point(841, 432);
+            button_CSV.Location = new Point(787, 432);
             button_CSV.Name = "button_CSV";
             button_CSV.Size = new Size(255, 58);
             button_CSV.TabIndex = 10;
@@ -60,9 +61,8 @@
             CSV_textBox.AllowDrop = true;
             CSV_textBox.Location = new Point(448, 9);
             CSV_textBox.Name = "CSV_textBox";
-            CSV_textBox.Size = new Size(648, 31);
+            CSV_textBox.Size = new Size(594, 31);
             CSV_textBox.TabIndex = 9;
-            CSV_textBox.Text = "C:\\Users\\kana-\\OneDrive\\プログラミング学習\\test.txt";
             // 
             // label2
             // 
@@ -75,19 +75,30 @@
             // 
             // button_settingFile
             // 
-            button_settingFile.Location = new Point(588, 432);
+            button_settingFile.Location = new Point(224, 432);
             button_settingFile.Name = "button_settingFile";
             button_settingFile.Size = new Size(255, 58);
             button_settingFile.TabIndex = 7;
-            button_settingFile.Text = "設定ファイルを編集する";
+            button_settingFile.Text = "設定ファイルの初期値を設定する";
             button_settingFile.UseVisualStyleBackColor = true;
             button_settingFile.Click += button_settingFile_Click;
+            // 
+            // Change_SettingFile_button
+            // 
+            Change_SettingFile_button.Location = new Point(504, 432);
+            Change_SettingFile_button.Name = "Change_SettingFile_button";
+            Change_SettingFile_button.Size = new Size(255, 58);
+            Change_SettingFile_button.TabIndex = 11;
+            Change_SettingFile_button.Text = "変更した設定ファイルを反映する";
+            Change_SettingFile_button.UseVisualStyleBackColor = true;
+            Change_SettingFile_button.Click += Change_SettingFile_button_Click;
             // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1222, 524);
+            Controls.Add(Change_SettingFile_button);
             Controls.Add(button_CSV);
             Controls.Add(CSV_textBox);
             Controls.Add(label2);
@@ -107,5 +118,6 @@
          TextBox CSV_textBox;
          Label label2;
          Button button_settingFile;
+        private Button Change_SettingFile_button;
     }
 }
