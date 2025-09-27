@@ -28,7 +28,7 @@ namespace GraduationProject
 
         //　設定ファイルのテンプレートのフルパスを取得
         static readonly string templatePath
-            = Path.Combine(exeDir, Column.defolt_settingFileName);
+            = Path.Combine(exeDir, Column.defoltSettingFileName);
 
         // メンバ変数
 
@@ -180,7 +180,7 @@ namespace GraduationProject
                 var settings = SettingParser.ParseMultiple(editedSettingPath);
 
                 // 項番の文字列を取得
-                orderStr = SettingParser.GetValues(settingsToSave, Column.column_exColumn)
+                orderStr = SettingParser.GetValues(settingsToSave, Column.columnExColumn)
                     .FirstOrDefault()?.Split(':');
 
                 // バリデーション付きで項番を解析
@@ -200,7 +200,7 @@ namespace GraduationProject
 
                 // CSVを編集して保存するための出力ファイル名を取得
                 outputName = SettingParser.GetSingleValue
-                    (settingsToSave, Column.column_outFileName);
+                    (settingsToSave, Column.columnOutFileName);
                 string outputCsvPath = Path.Combine(csvDir, outputName);
 
                 // 書き込みログ
@@ -230,9 +230,9 @@ namespace GraduationProject
             CollectSettingsFromGrid(); // 編集内容を取得
 
             // 案件名の取得と初期化
-            projectName = SettingParser.GetSingleValue(settingsToSave, Column.column_projectName);
+            projectName = SettingParser.GetSingleValue(settingsToSave, Column.columnProjectName);
             if (string.IsNullOrWhiteSpace(projectName))
-                projectName = Column.defolt_output_settingFileName;
+                projectName = Column.defoltOutputSettingFileName;
 
             csvPath = CSV_textBox.Text;
             csvDir = Path.GetDirectoryName(csvPath);
@@ -245,7 +245,7 @@ namespace GraduationProject
             LoadCsvHeaders();
 
             // 項番の妥当性チェック
-            var rawOrderValues = SettingParser.GetValues(settingsToSave, Column.column_exColumn)
+            var rawOrderValues = SettingParser.GetValues(settingsToSave, Column.columnExColumn)
                 .FirstOrDefault()?.Split(':') ?? Array.Empty<string>();
 
             if (!IndexValidator.TryParseIndices
@@ -259,7 +259,7 @@ namespace GraduationProject
                     projectName = projectName.Replace(c.ToString(), "");
 
                 // 日付を付加したファイル名にする
-                renameOutputSettingFileName = $"{Column.timestamp}_{projectName}.txt";
+                renameOutputSettingFileName = $"{Column.timeStamp}_{projectName}.txt";
                 string outputSettingPath = Path.Combine(csvDir, renameOutputSettingFileName);
 
                 // 設定ファイルを保存
@@ -306,7 +306,7 @@ namespace GraduationProject
             // 文字コードを取得
             encodingStr = SettingParser.GetValues
            (settingsToSave,
-               Column.column_mojiCord).FirstOrDefault()?.ToLower();
+               Column.columnMojiCord).FirstOrDefault()?.ToLower();
 
             // 文字コードを設定
             encoding = encodingStr switch
@@ -432,7 +432,7 @@ namespace GraduationProject
             string key = dataGridView1.Rows[e.RowIndex].Cells[0].Value?.ToString();
 
             // 例：特定のキーに対して編集フォームを表示
-            if (key == Column.column_exColumn)
+            if (key == Column.columnExColumn)
             {
                 var value = dataGridView1.Rows[e.RowIndex].Cells[1].Value?.ToString();
 
