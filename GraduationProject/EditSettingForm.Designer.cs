@@ -46,6 +46,7 @@
             // 
             // dataGridViewSource
             // 
+            dataGridViewSource.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             dataGridViewSource.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dataGridViewSource.Location = new Point(207, 89);
             dataGridViewSource.Name = "dataGridViewSource";

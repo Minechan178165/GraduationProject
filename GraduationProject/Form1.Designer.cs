@@ -28,27 +28,32 @@
         /// </summary>
         void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             dataGridView1 = new DataGridView();
             button_CSV = new Button();
             CSV_textBox = new TextBox();
             label2 = new Label();
             button_settingFile = new Button();
             Change_SettingFile_button = new Button();
+            toolTipSpilit = new ToolTip(components);
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             SuspendLayout();
             // 
             // dataGridView1
             // 
+            dataGridView1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dataGridView1.Location = new Point(126, 42);
             dataGridView1.Name = "dataGridView1";
             dataGridView1.RowHeadersWidth = 62;
-            dataGridView1.Size = new Size(916, 331);
+            dataGridView1.Size = new Size(916, 384);
             dataGridView1.TabIndex = 1;
             // 
             // button_CSV
             // 
-            button_CSV.Location = new Point(787, 432);
+            button_CSV.Anchor = AnchorStyles.Bottom;
+            button_CSV.Enabled = false;
+            button_CSV.Location = new Point(728, 454);
             button_CSV.Name = "button_CSV";
             button_CSV.Size = new Size(255, 58);
             button_CSV.TabIndex = 10;
@@ -59,13 +64,15 @@
             // CSV_textBox
             // 
             CSV_textBox.AllowDrop = true;
-            CSV_textBox.Location = new Point(448, 9);
+            CSV_textBox.Anchor = AnchorStyles.Top;
+            CSV_textBox.Location = new Point(444, 5);
             CSV_textBox.Name = "CSV_textBox";
             CSV_textBox.Size = new Size(594, 31);
             CSV_textBox.TabIndex = 9;
             // 
             // label2
             // 
+            label2.Anchor = AnchorStyles.Top;
             label2.AutoSize = true;
             label2.Location = new Point(126, 9);
             label2.Name = "label2";
@@ -75,7 +82,9 @@
             // 
             // button_settingFile
             // 
-            button_settingFile.Location = new Point(224, 432);
+            button_settingFile.Anchor = AnchorStyles.Bottom;
+            button_settingFile.Enabled = false;
+            button_settingFile.Location = new Point(165, 454);
             button_settingFile.Name = "button_settingFile";
             button_settingFile.Size = new Size(255, 58);
             button_settingFile.TabIndex = 7;
@@ -85,13 +94,19 @@
             // 
             // Change_SettingFile_button
             // 
-            Change_SettingFile_button.Location = new Point(504, 432);
+            Change_SettingFile_button.Anchor = AnchorStyles.Bottom;
+            Change_SettingFile_button.Enabled = false;
+            Change_SettingFile_button.Location = new Point(448, 454);
             Change_SettingFile_button.Name = "Change_SettingFile_button";
             Change_SettingFile_button.Size = new Size(255, 58);
             Change_SettingFile_button.TabIndex = 11;
             Change_SettingFile_button.Text = "変更した設定ファイルを反映する";
             Change_SettingFile_button.UseVisualStyleBackColor = true;
             Change_SettingFile_button.Click += Change_SettingFile_button_Click;
+            // 
+            // toolTipSpilit
+            // 
+            toolTipSpilit.Popup += toolTipSpilit_Popup;
             // 
             // Form1
             // 
@@ -105,7 +120,7 @@
             Controls.Add(button_settingFile);
             Controls.Add(dataGridView1);
             Name = "Form1";
-            Text = "Form1";
+            Text = "GraduationProject";
             ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
             ResumeLayout(false);
             PerformLayout();
@@ -119,5 +134,6 @@
          Label label2;
          Button button_settingFile;
         private Button Change_SettingFile_button;
+        private ToolTip toolTipSpilit;
     }
 }

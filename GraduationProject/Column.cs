@@ -39,5 +39,35 @@ namespace GraduationProject
         public static readonly string columnMojiCord =
             "{文字コード}";
 
+        //　設定ファイル：分割の基準
+        public static readonly string columnSplitStandard =
+            "{分割の基準}";
+
+        //　設定ファイル：分割する項番
+        public static readonly string columnSplitColumn =
+            "{分割の指定の項番}";
+
+        //　設定ファイル：分割する件数
+        public static readonly string columnSplitCount =
+            "{分割する件数}";
+
+
+
+
+        //　設定ファイル：連番を付加する必要の有無
+        public static readonly string columnRenbanNeed = 
+            "{連番を末尾に付加するか}";
+          
+
+        //　設定ファイル：連番の桁数
+        public static readonly string columnRenbanDigits =
+            "{連番の桁数}";
+
+        //　設定ファイル：連番の頭の文字
+        public static readonly string columnRenbanHead =
+            "{連番の頭の文字}";
+
+
+
     }
 }
