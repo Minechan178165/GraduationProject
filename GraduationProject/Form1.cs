@@ -49,6 +49,7 @@ namespace GraduationProject
         static string csvDir;
 
 
+
         // 項番の順序を取得（:区切り）
         static string[] orderStr;
 
@@ -128,6 +129,8 @@ namespace GraduationProject
             // DataGridViewにテンプレート設定を表示
             ShowSettings(settings);
 
+            PrepareCsvEditingContext();
+
             //　設定ファイルを編集するボタンを有効化
             Change_SettingFile_button.Enabled = true;
 
@@ -154,7 +157,7 @@ namespace GraduationProject
                 string editedSettingPath = Path.Combine(csvDir, renameOutputSettingFileName);
 
                 //　読込ログ
-                LogRead(editedSettingPath);
+                Debug.LogRead(editedSettingPath);
 
                 // 設定ファイルを読み込む
                 var settings = SettingParser.ParseMultiple(editedSettingPath);
@@ -172,7 +175,7 @@ namespace GraduationProject
                     CsvHeaders.Length,
                     out var validOrder))                    
                     {
-                        Log("項番解析失敗：妥当性チェックエラー");
+                        Debug.Log("項番解析失敗：妥当性チェックエラー");
                         return;
                     }
 
@@ -227,7 +230,7 @@ namespace GraduationProject
 
 
 
-                    Log("連番追加設定：有効");
+                    Debug.Log("連番追加設定：有効");
                 }
                 else
                 {
@@ -236,7 +239,7 @@ namespace GraduationProject
                         (row, order) => order.Select(i => row[i]).ToArray();
 
 
-                    Log("連番追加設定：無効");
+                    Debug.Log("連番追加設定：無効");
                 }
 
 
@@ -249,7 +252,7 @@ namespace GraduationProject
                 string outputCsvPath = Path.Combine(csvDir, outputName);
 
                 // 書き込みログ
-                LogWrite(outputCsvPath);
+                Debug.LogWrite(outputCsvPath);
 
                 // CSVの項目を編集して保存
                 CsvEditor.EditCsv(csvPath, outputCsvPath, columnOrder, encoding, reorder);
@@ -263,7 +266,7 @@ namespace GraduationProject
 
                 MessageBox.Show("CSVの編集と保存が完了しました。",
                     "完了", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                Log("CSV編集と保存完了");
+                Debug.Log("CSV編集と保存完了");
             }
 
             // 例外処理
@@ -271,7 +274,7 @@ namespace GraduationProject
             {
                 MessageBox.Show($"CSV編集に失敗しました: {ex.Message}",
                     "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                Log($"CSV編集エラー: {ex.Message}");
+                Debug.Log($"CSV編集エラー: {ex.Message}");
             }
         }
 
@@ -291,7 +294,7 @@ namespace GraduationProject
             {
                 MessageBox.Show("分割の基準が無効です。1（件数）または2（項番）を指定してください。",
                     "分割設定エラー", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                Log("分割設定エラー：分割の基準が無効");
+                Debug.Log("分割設定エラー：分割の基準が無効");
                 return;
             }
 
@@ -305,13 +308,13 @@ namespace GraduationProject
                 {
                     MessageBox.Show("分割件数が無効です。数値を入力してください。",
                         "分割件数エラー", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    Log("分割件数エラー：無効な数値");
+                    Debug.Log("分割件数エラー：無効な数値");
                     return;
                 }
 
                 csvEditor.SplitCsvByCount(editedCsvPath, csvDir, splitCount,
                     encoding, fileNameWithoutExt);
-                Log($"CSV分割完了：件数分割（{splitCount}件）");
+                Debug.Log($"CSV分割完了：件数分割（{splitCount}件）");
             }
 
             // 項番で分割
@@ -322,13 +325,13 @@ namespace GraduationProject
                 {
                     MessageBox.Show("分割項番が無効です。数値を入力してください。",
                         "分割項番エラー", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    Log("分割項番エラー：無効な数値");
+                    Debug.Log("分割項番エラー：無効な数値");
                     return;
                 }
 
                 csvEditor.SplitCsvByColumnValue(editedCsvPath, csvDir, splitColumn,
                     encoding, fileNameWithoutExt);
-                Log($"CSV分割完了：項番分割（項番 {splitColumn}）");
+                Debug.Log($"CSV分割完了：項番分割（項番 {splitColumn}）");
             }
 
             // 分割しない
@@ -336,7 +339,7 @@ namespace GraduationProject
             {
                 MessageBox.Show("分割の基準が無効です。1（件数）または2（項番）を指定してください。",
                     "分割設定エラー", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                Log($"CSV分割なし：無効な分割基準（{splitStandard}）");
+                Debug.Log($"CSV分割なし：無効な分割基準（{splitStandard}）");
             }
         }
 
@@ -346,22 +349,25 @@ namespace GraduationProject
         //　編集した設定ファイルを保存するボタンのイベントハンドラ
         private void Change_SettingFile_button_Click(object sender, EventArgs e)
         {
-            CollectSettingsFromGrid(); // 編集内容を取得
 
-            // 案件名の取得と初期化
-            projectName = SettingParser.GetSingleValue(settingsToSave, Column.columnProjectName);
-            if (string.IsNullOrWhiteSpace(projectName))
-                projectName = Column.defoltOutputSettingFileName;
+            PrepareCsvEditingContext();
+            //CollectSettingsFromGrid(); // 編集内容を取得
 
-            csvPath = CSV_textBox.Text;
-            csvDir = Path.GetDirectoryName(csvPath);
+            //// 案件名の取得と初期化
+            //projectName = SettingParser.GetSingleValue(settingsToSave, Column.columnProjectName);
+            //if (string.IsNullOrWhiteSpace(projectName))
+            //    projectName = Column.defoltOutputSettingFileName;
+
+            //csvPath = CSV_textBox.Text;
+            //csvDir = Path.GetDirectoryName(csvPath);
+            //Debug.csvDir = csvDir; // Debugクラス用に設定
 
 
-            // 文字コードを取得
-            encoding = GetEncoding();
+            //// 文字コードを取得
+            //encoding = GetEncoding();
 
-            // CSVのヘッダーを読み込む
-            LoadCsvHeaders();
+            //// CSVのヘッダーを読み込む
+            //LoadCsvHeaders();
 
             // 項番の妥当性チェック
             var rawOrderValues = SettingParser.GetValues(settingsToSave, Column.columnExColumn)
@@ -385,7 +391,7 @@ namespace GraduationProject
                 SaveSettings(settingsToSave, outputSettingPath);
 
                 MessageBox.Show("設定ファイルを保存しました。", "保存完了", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                Log($"編集設定ファイルを保存: {outputSettingPath}");
+                Debug.Log($"編集設定ファイルを保存: {outputSettingPath}");
 
                 // CSVファイルが指定されていれば、CSV編集ボタンを有効化
                 if (!string.IsNullOrWhiteSpace(csvPath) && File.Exists(csvPath))
@@ -394,8 +400,30 @@ namespace GraduationProject
             catch (Exception ex)
             {
                 MessageBox.Show($"設定ファイルの保存に失敗しました: {ex.Message}", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                Log($"編集設定ファイル保存エラー: {ex.Message}");
+                Debug.Log($"編集設定ファイル保存エラー: {ex.Message}");
             }
+        }
+
+        void PrepareCsvEditingContext()
+        {
+            // 編集内容を取得
+            CollectSettingsFromGrid();
+
+            // 案件名の取得と初期化
+            projectName = SettingParser.GetSingleValue(settingsToSave, Column.columnProjectName);
+            if (string.IsNullOrWhiteSpace(projectName))
+                projectName = Column.defoltOutputSettingFileName;
+
+            // CSVパスとディレクトリの取得
+            csvPath = CSV_textBox.Text;
+            csvDir = Path.GetDirectoryName(csvPath);
+            Debug.csvDir = csvDir;
+
+            // 文字コードの取得
+            encoding = GetEncoding();
+
+            // ヘッダーの読込
+            LoadCsvHeaders();
         }
 
 
@@ -429,6 +457,14 @@ namespace GraduationProject
             encodingStr = SettingParser.GetValues(settingsToSave, Column.columnMojiCord)
                 .FirstOrDefault()?.ToLower();
 
+            if (encodingStr != "utf-8" && encodingStr != "shift_jis" && encodingStr != "utf-16")
+            {
+                MessageBox.Show($"指定された文字コード「{encodingStr}」は未対応です。UTF-8で処理します。",
+                    "文字コード警告", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                Debug.Log($"未対応の文字コード指定：{encodingStr} → UTF-8で処理");
+            }
+
+
             encoding = encodingStr switch
             {
                 "utf-16" => Encoding.Unicode,
@@ -438,13 +474,7 @@ namespace GraduationProject
                 _ => Encoding.UTF8
             };
 
-            if (encodingStr != "utf-8" && encodingStr != "shift_jis" && encodingStr != "utf-16")
-            {
-                MessageBox.Show($"指定された文字コード「{encodingStr}」は未対応です。UTF-8で処理します。",
-                    "文字コード警告", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                Log($"未対応の文字コード指定：{encodingStr} → UTF-8で処理");
-            }
-
+           
             return encoding;
         }
 
@@ -484,14 +514,14 @@ namespace GraduationProject
                     }
                 }
                 // 書き込みログ
-                LogWrite(path);
+                Debug.LogWrite(path);
             }
 
             // 例外処理
             catch (Exception ex)
             {
                 MessageBox.Show($"設定ファイルの保存に失敗しました: {ex.Message}", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                Log($"設定ファイル保存エラー: {ex.Message}");
+                Debug.Log($"設定ファイル保存エラー: {ex.Message}");
             }
         }
 
@@ -499,42 +529,90 @@ namespace GraduationProject
 
 
         // CSVのヘッダーを読み込むメソッド
+        //void LoadCsvHeaders()
+        //{
+        //    try
+        //    {
+        //        if (string.IsNullOrWhiteSpace(csvPath) || !File.Exists(csvPath))
+        //        {
+        //            MessageBox.Show("CSVファイルが見つかりません。パスを確認してください。",
+        //                "ファイルエラー", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        //            Debug.Log("CSVヘッダー読込失敗：ファイルが存在しない");
+        //            CsvHeaders = Array.Empty<string>();
+        //            return;
+        //        }
+
+        //        Debug.LogRead(csvPath);
+
+        //        var firstLine = File.ReadLines(csvPath, encoding).FirstOrDefault();
+        //        CsvHeaders = firstLine?.Split(',') ?? Array.Empty<string>();
+
+        //        if (!CsvHeaders.Any())
+        //            //if (CsvHeaders.Length == 0)
+        //            {
+        //            MessageBox.Show("CSVファイルにヘッダーが見つかりません。",
+        //                "ヘッダーエラー", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        //            Debug.Log("CSVヘッダー読込失敗：空のヘッダー");
+        //        }
+        //        else
+        //        {
+        //            Debug.Log("CSVヘッダー読込成功");
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show($"CSVヘッダーの読込に失敗しました: {ex.Message}",
+        //            "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        //        Debug.Log($"CSVヘッダー読込エラー: {ex.Message}");
+        //        CsvHeaders = Array.Empty<string>();
+        //    }
+        //}
+
         void LoadCsvHeaders()
         {
             try
             {
-                if (string.IsNullOrWhiteSpace(csvPath) || !File.Exists(csvPath))
+                if (!IsCsvFileValid(csvPath))
                 {
                     MessageBox.Show("CSVファイルが見つかりません。パスを確認してください。",
                         "ファイルエラー", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    Log("CSVヘッダー読込失敗：ファイルが存在しない");
+                    Debug.Log("CSVヘッダー読込失敗：ファイルが存在しない");
                     CsvHeaders = Array.Empty<string>();
                     return;
                 }
 
-                LogRead(csvPath);
+                Debug.LogRead(csvPath);
 
-                var firstLine = File.ReadLines(csvPath, encoding).FirstOrDefault();
-                CsvHeaders = firstLine?.Split(',') ?? Array.Empty<string>();
+                CsvHeaders = ReadCsvHeaderLine(csvPath, encoding);
 
-                if (CsvHeaders.Length == 0)
+                if (!CsvHeaders.Any())
                 {
                     MessageBox.Show("CSVファイルにヘッダーが見つかりません。",
                         "ヘッダーエラー", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    Log("CSVヘッダー読込失敗：空のヘッダー");
+                    Debug.Log("CSVヘッダー読込失敗：空のヘッダー");
                 }
                 else
                 {
-                    Log("CSVヘッダー読込成功");
+                    Debug.Log("CSVヘッダー読込成功");
                 }
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"CSVヘッダーの読込に失敗しました: {ex.Message}",
                     "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                Log($"CSVヘッダー読込エラー: {ex.Message}");
+                Debug.Log($"CSVヘッダー読込エラー: {ex.Message}");
                 CsvHeaders = Array.Empty<string>();
             }
+        }
+
+        bool IsCsvFileValid(string path)
+        {
+            return !string.IsNullOrWhiteSpace(path) && File.Exists(path);
+        }
+
+        string[] ReadCsvHeaderLine(string path, Encoding encoding)
+        {
+            return File.ReadLines(path, encoding).FirstOrDefault()?.Split(',') ?? Array.Empty<string>();
         }
 
 
@@ -550,22 +628,40 @@ namespace GraduationProject
         void TextBox_DragDrop(object sender, DragEventArgs e)
         {
             string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
-            if (files.Length > 0 && sender is TextBox target)
+
+            var file=files?.FirstOrDefault();
+
+            if(!string.IsNullOrWhiteSpace(file) && sender is TextBox target)
             {
-                target.Text = files[0];
+                InitializeCsvPath(file, target);
 
-                // CSVファイルのパスとディレクトリを取得
-                csvPath = files[0];
-                csvDir = Path.GetDirectoryName(csvPath);
+                //target.Text = file;
 
-                // CSVファイルがドラッグアンドドロップされたので、
-                // テンプレ設定ファイルを設定ボタンを有効化
-                button_settingFile.Enabled = true;
+                //// CSVファイルのパスとディレクトリを取得               
+                //csvPath = file;
+                //csvDir = Path.GetDirectoryName(csvPath);
+                //Debug.csvDir = csvDir; // Debugクラス用に設定
 
-                // 初期化ログ（任意）
-                Log($"CSVファイルが指定されました: {csvPath}");
+                //// CSVファイルがドラッグアンドドロップされたので、
+                //// テンプレ設定ファイルを設定ボタンを有効化
+                //button_settingFile.Enabled = true;
+
+                //// 初期化ログ（任意）
+                //Debug.Log($"CSVファイルが指定されました: {csvPath}");
             }
         }
+
+
+        void InitializeCsvPath(string file, TextBox target)
+        {
+            target.Text = file;
+            csvPath = file;
+            csvDir = Path.GetDirectoryName(csvPath);
+            Debug.csvDir = csvDir;
+            button_settingFile.Enabled = true;
+            Debug.Log($"CSVファイルが指定されました: {csvPath}");
+        }
+
 
         //　DataGridViewのセルにマウスが乗ったときのイベントハンドラ
         private void dataGridView1_CellToolTipTextNeeded(object sender, DataGridViewCellToolTipTextNeededEventArgs e)
@@ -580,17 +676,32 @@ namespace GraduationProject
                 string key = dataGridView1.Rows[e.RowIndex].Cells[0].Value?.ToString();
                 string value = dataGridView1.Rows[e.RowIndex].Cells[1].Value?.ToString();
 
-                if (string.IsNullOrEmpty(key))
-                {
-                    e.ToolTipText = $"値: {value}";
-                    return;
-                }
 
-                e.ToolTipText = itemDescriptions.ContainsKey(key)
-                    ? $"{itemDescriptions[key]}\n現在の値: {value}"
-                    : $"項目: {key}\n値: {value}";
+                e.ToolTipText = GetToolTipText(key, value);
+                //if (string.IsNullOrEmpty(key))
+                //{
+                //    e.ToolTipText = $"値: {value}";
+                //    return;
+                //}
+
+                //e.ToolTipText = itemDescriptions.ContainsKey(key)
+                //    ? $"{itemDescriptions[key]}\n現在の値: {value}"
+                //    : $"項目: {key}\n値: {value}";
             }
         }
+
+
+        string GetToolTipText(string key, string value)
+        {
+            if (string.IsNullOrEmpty(key))
+                return $"値: {value}";
+
+            return itemDescriptions.ContainsKey(key)
+                ? $"{itemDescriptions[key]}\n現在の値: {value}"
+                : $"項目: {key}\n値: {value}";
+        }
+
+
 
         readonly Dictionary<string, string> itemDescriptions = new()
 {
@@ -623,123 +734,56 @@ namespace GraduationProject
             {
                 var value = dataGridView1.Rows[e.RowIndex].Cells[1].Value?.ToString();
 
-                var editForm = new EditSettingForm(key, value, CsvHeaders); // ← 別フォームに渡す
+                HandleEditColumnSetting(key, value, e.RowIndex);
+
+                //var editForm = new EditSettingForm(key, value, CsvHeaders); // ← 別フォームに渡す
 
 
 
-                if (editForm.ShowDialog() == DialogResult.OK)
-                {
-                    // 編集後の値を反映
-                    dataGridView1.Rows[e.RowIndex].Cells[1].Value = editForm.EditedValue;
 
-                    // settingsToSave にも反映
-                    if (!settingsToSave.ContainsKey(key))
-                        settingsToSave[key] = new List<string>();
-                    else
-                        settingsToSave[key].Clear();
+                //    if (editForm.ShowDialog() == DialogResult.OK)
+                //    {
+                //    // 編集後の値を反映
+                //    dataGridView1.Rows[e.RowIndex].Cells[1].Value = editForm.EditedValue;
 
-                    settingsToSave[key].Add(editForm.EditedValue);
+                //    // settingsToSave にも反映
+                //    if (!settingsToSave.ContainsKey(key))
+                //        settingsToSave[key] = new List<string>();
+                //    else
+                //        settingsToSave[key].Clear();
 
-                    // 再保存処理を呼び出す
-                    string outputSettingPath = Path.Combine(csvDir, renameOutputSettingFileName);
-                    SaveSettings(settingsToSave, outputSettingPath);
-                }
+                //    settingsToSave[key].Add(editForm.EditedValue);
+
+                //    // 再保存処理を呼び出す
+                //    string outputSettingPath = Path.Combine(csvDir, renameOutputSettingFileName);
+                //    SaveSettings(settingsToSave, outputSettingPath);
+            }
             }
 
 
-        }
+        
 
-        // ログ出力メソッド
-        static void Log(string message)
+
+        void HandleEditColumnSetting(string key, string value, int rowIndex)
         {
-            string today = DateTime.Now.ToString("yyyy-MM-dd");
-            string logFileName = $"log_{today}.txt";
-            string logPath = Path.Combine(csvDir, logFileName);
-            string logEntry = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss} - {message}";
-
-            try
+            var editForm = new EditSettingForm(key, value, CsvHeaders);
+            if (editForm.ShowDialog() == DialogResult.OK)
             {
-                // ファイルが存在しない場合は新規作成（上書き）
-                // 存在する場合は追記
-                if (!File.Exists(logPath))
-                {
-                    File.WriteAllText(logPath, logEntry + Environment.NewLine, Encoding.UTF8);
+                dataGridView1.Rows[rowIndex].Cells[1].Value = editForm.EditedValue;
 
-                }
+                if (!settingsToSave.ContainsKey(key))
+                    settingsToSave[key] = new List<string>();
                 else
-                {
-                    File.AppendAllText(logPath, logEntry + Environment.NewLine, Encoding.UTF8);
-                }
-            }
-            catch (Exception ex)
-            {
-                // ログ出力に失敗した場合でもアプリが落ちないように
-                // 可能なら、標準出力やデバッグ出力に記録
-                try
-                {
-                    System.Diagnostics.Debug.WriteLine($"ログ出力失敗: {ex.Message}");
-                }
-                catch
-                {
-                    // Debug出力も失敗した場合は何もしない（完全に握りつぶす）
-                }
-            }
+                    settingsToSave[key].Clear();
 
-        }
+                settingsToSave[key].Add(editForm.EditedValue);
 
-        // 読込・書込のログを出力するメソッド
-        static void LogRead(string filePath)
-        {
-            Log($"読込開始: {filePath}");
-        }
-
-        static void LogWrite(string filePath)
-        {
-            Log($"書き込み開始: {filePath}");
-        }
-
-
-
-        // 項番の妥当性をチェックするクラス
-        public static class IndexValidator
-        {
-
-            //　項目番号の妥当性をチェックするメソッド
-            public static bool TryParseIndices
-                (IEnumerable<string> rawValues, int maxLength, out List<int> validIndices)
-            {
-                validIndices = new List<int>();
-                var seen = new HashSet<int>();
-
-                foreach (var val in rawValues)
-                {
-                    // 項番が整数であることを確認
-                    // 範囲内であることを確認
-                    // 重複していないことを確認
-                    if (!int.TryParse(val, out int index) ||
-                        index < 0 ||
-                        index >= maxLength)
-                    {
-                        MessageBox.Show($"項番「{val}」は無効です。設定できません。",
-                            "項番エラー", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                        return false;
-                    }
-
-                    if (!seen.Add(index))
-                    {
-                        MessageBox.Show($"項番「{index}」が重複しています。重複は設定できません。",
-                            "重複エラー", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                        return false;
-                    }
-
-
-
-                    validIndices.Add(index);
-                }
-
-                return true;
+                //string outputSettingPath = Path.Combine(csvDir, renameOutputSettingFileName);
+                //SaveSettings(settingsToSave, outputSettingPath);
             }
         }
+
+
 
         private void toolTipSpilit_Popup(object sender, PopupEventArgs e)
         {

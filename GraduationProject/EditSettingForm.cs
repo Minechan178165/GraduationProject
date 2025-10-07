@@ -141,7 +141,7 @@ namespace GraduationProject
             //}
 
             //EditedValue = string.Join(":", validIndices);
-            //DialogResult = DialogResult.OK;
+            //DiaDebug.LogResult = DiaDebug.LogResult.OK;
             //Close();
         }
 
@@ -153,7 +153,7 @@ namespace GraduationProject
         //.ToArray();
 
         //        EditedValue = string.Join(":", indices);
-        //        DialogResult = DialogResult.OK;
+        //        DiaDebug.LogResult = DiaDebug.LogResult.OK;
         //        Close();
         //    }
 

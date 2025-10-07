@@ -45,7 +45,7 @@ namespace GraduationProject
                 var chunkRows = rows.Skip(i * chunkSize).Take(chunkSize);
                 var outputPath = Path.Combine(outputDir, outputFileName+$"_chunk_{i + 1}.csv");
                 File.WriteAllLines(outputPath, new[] { header }.Concat(chunkRows), encoding);
-                //LogWrite(outputPath);
+                //Debug.LogWrite(outputPath);
             }
         }
 
@@ -70,7 +70,7 @@ namespace GraduationProject
                 var outputPath = Path.Combine(outputDir, outputFileName+$"_group_{group.Key}.csv");
                 File.WriteAllLines(outputPath, new[] { header }
                 .Concat(group.Select(x => x.Line)), encoding);
-                //LogWrite(outputPath);
+                //Debug.LogWrite(outputPath);
             }
         }
 
